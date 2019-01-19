@@ -7,6 +7,7 @@ strip_length = 150
 ticks = 8
 strip = neopixel.NeoPixel(pin0, strip_length)
 incoming_interrupt = None
+forwards = True
 
 def strip_colour(colour):
     for position in range(0, strip_length):
@@ -44,11 +45,18 @@ clocks = clock_generator()
 
 def chase_animation():
     tail_length = 20
+    if forwards:
+        chase_range = (0, strip_length+tail_length)
+    else:
+        chase_range = (strip_length+tail_length-1, -1, -1)
     while True:
-        for chase_position in range(0, strip_length+tail_length):
+        for chase_position in range(*chase_range):
             display.show(next(clocks))
             for trailing_position in range(0, tail_length+1):
-                position = chase_position - trailing_position
+                if forwards:
+                    position = chase_position - trailing_position
+                else:
+                    position = chase_position + trailing_position
                 if position < strip_length:
                     tick_luma = 255 if position % ticks == 0 else 5
                     anim_luma = int(255*((tail_length-trailing_position) / tail_length))
