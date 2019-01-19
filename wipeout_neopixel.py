@@ -25,9 +25,7 @@ def countdown_animation(text, colour):
             strip[position] = anim_colour
         strip.show()
 
-        global incoming_interrupt
-        incoming_interrupt = radio.receive()
-        if incoming_interrupt:
+        if radio_latest.any():
             return
 
 def clock_generator():
@@ -65,23 +63,42 @@ def chase_animation():
                     anim_luma = int(255*((tail_length-trailing_position) / tail_length))
                     strip[position] = (anim_luma, (tick_luma + anim_luma)//2, anim_luma)
             strip.show()
-
-            global incoming_interrupt
-            incoming_interrupt = radio.receive()
-            if incoming_interrupt:
+            if radio_latest.any():
                 return
 
+class RadioLatest():
+    def __init__(self):
+        radio.on()
+        self.current_message = None
+
+    def any(self):
+        while True:
+            message = radio.receive()
+            if message:
+                self.current_message = message
+            else:
+                break
+        return bool(self.current_message)
+
+    def message_peek(self):
+        return self.current_message
+
+    def message_get(self):
+        self.any()
+        message = self.current_message
+        self.current_message = None
+        return message
+radio_latest = RadioLatest()
+
+# START
 
 display.show(Image.ARROW_N)
 
 # LOOP
 while True:
-    if incoming_interrupt:
-        incoming = incoming_interrupt
-        incoming_interrupt = None
+    if radio_latest.any():
+        incoming = radio_latest.message_get()
     else:
-        incoming = radio.receive()
-    if incoming is None:
         sleep(10)
         continue
 
