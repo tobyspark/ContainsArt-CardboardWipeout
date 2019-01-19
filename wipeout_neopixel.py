@@ -3,7 +3,7 @@ from microbit import *
 import neopixel
 import radio
 
-strip_length = 144
+strip_length = 150
 ticks = 8
 strip = neopixel.NeoPixel(pin0, strip_length)
 incoming_interrupt = None
