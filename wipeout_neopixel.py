@@ -1,13 +1,16 @@
-# Add your Python code here. E.g.
 from microbit import *
 import neopixel
 import radio
 
+# SETTINGS
 strip_length = 150
 ticks = 8
+forwards = True
+
+# SETUP
 strip = neopixel.NeoPixel(pin0, strip_length)
 incoming_interrupt = None
-forwards = True
+radio.on()
 
 def strip_colour(colour):
     for position in range(0, strip_length):
@@ -44,11 +47,11 @@ def clock_generator():
 clocks = clock_generator()
 
 def chase_animation():
-    tail_length = 20
+    tail_length = 10
     if forwards:
         chase_range = (0, strip_length+tail_length)
     else:
-        chase_range = (strip_length+tail_length-1, -1, -1)
+        chase_range = (strip_length-1, -tail_length-1, -1)
     while True:
         for chase_position in range(*chase_range):
             display.show(next(clocks))
@@ -57,7 +60,7 @@ def chase_animation():
                     position = chase_position - trailing_position
                 else:
                     position = chase_position + trailing_position
-                if position < strip_length:
+                if 0 < position < strip_length:
                     tick_luma = 255 if position % ticks == 0 else 5
                     anim_luma = int(255*((tail_length-trailing_position) / tail_length))
                     strip[position] = (anim_luma, (tick_luma + anim_luma)//2, anim_luma)
@@ -68,10 +71,10 @@ def chase_animation():
             if incoming_interrupt:
                 return
 
-radio.on()
-messages = ['3', '2', '1', 'Go']
 
 display.show(Image.ARROW_N)
+
+# LOOP
 while True:
     if incoming_interrupt:
         incoming = incoming_interrupt
