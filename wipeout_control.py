@@ -1,6 +1,8 @@
 from microbit import *
 import radio
 
+use_beam_break = False
+
 def change_state(state, message=None):
     display.show(state)
     radio.send(state)
@@ -47,12 +49,16 @@ while True:
         while not button_b.was_pressed():
             # Start detecting the car over the line
             # once it's had a chance to leave the line
-            if running_time() - race_start_time > 5*1000:
-                if not beam_watcher():  # beam broken
-                    break
+            if use_beam_break:
+                if running_time() - race_start_time > 5*1000:
+                    if not beam_watcher():  # beam broken
+                        break
+            pass
         race_end_time = running_time()
         # STATE: Race end
         change_state('F', (race_end_time - race_start_time)//1000)
         sleep(5*1000)
         # STATE: Wait for player
+        button_a.was_pressed()  # clear any extra button presses
+        button_b.was_pressed()
         change_state('W')
