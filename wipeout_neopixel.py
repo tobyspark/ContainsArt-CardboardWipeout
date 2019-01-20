@@ -9,7 +9,6 @@ forwards = True
 
 # SETUP
 strip = neopixel.NeoPixel(pin0, strip_length)
-incoming_interrupt = None
 radio.on()
 
 def strip_colour(colour):
@@ -117,4 +116,3 @@ while True:
     elif incoming.startswith('F'):
         display.show('F')
         strip_colour((0,0,255))
-
