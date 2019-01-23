@@ -1,17 +1,42 @@
+# CARDBOARD WIPEOUT
+# http://tobyz.net/projects/wipeout
+
+# Code to run the game from a micro:bit board.
+#
+# BUTTON A to start race
+# BUTTON B to finish race
+# Optionally - beam break sensor to finish race
+#
+# Broadcast states are W, 3, 2, 1, S, F
+# F also messages the race time, in whole seconds.
+
 from microbit import *
 import radio
 
 use_beam_break = False
 
 def change_state(state, message=None):
+    '''
+    Register the change of state with everything that needs it
+    '''
+    # The control micro:bit's display
     display.show(state)
+    # All other micro:bits nearby
     radio.send(state)
+    # Anything connected via serial, e.g. computer for sounds and projection
     if message:
         print('{}{}'.format(state, message))
     else:
         print(state)
 
 def get_beam_watcher():
+    '''
+    Returns a function that will report on whether the beam is broken.
+    Need to instantiate that function, e.g. `beam_watcher = get_beam_watcher()`
+    Requires a LED beam breaker pair, the sensor installed on pin0.
+    I found reading the input directly wasn't reliable, this returns True if 
+      it has been true in the last 1/4 second.
+    '''
     last_state = None
     last_time = running_time()
 
@@ -30,6 +55,7 @@ beam_watcher = get_beam_watcher()
 
 radio.on()
 
+# Times are milliseconds since the micro:bit was powered on.
 race_start_time = 0
 race_end_time = 0
 

@@ -1,3 +1,13 @@
+# CARDBOARD WIPEOUT
+# http://tobyz.net/projects/wipeout
+
+# Code to run on any micro:bit hacked into a radio-control car.
+# To be expanded:
+# - start countdown from car (could the game controller board be rolled in here? how to end race?)
+# - select which team logo to display
+# - connect motor on Go!
+# - weapons etc.
+
 from microbit import *
 from radiolatest import RadioLatest
 
@@ -7,7 +17,6 @@ from radiolatest import RadioLatest
 radio_latest = RadioLatest()
 
 # START
-
 display.show(Image.TARGET)
 
 # LOOP
