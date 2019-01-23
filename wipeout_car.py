@@ -1,33 +1,9 @@
 from microbit import *
-import radio
+from radiolatest import RadioLatest
 
 # SETTINGS
 
 # SETUP
-radio.on()
-
-class RadioLatest():
-    def __init__(self):
-        radio.on()
-        self.current_message = None
-
-    def any(self):
-        while True:
-            message = radio.receive()
-            if message:
-                self.current_message = message
-            else:
-                break
-        return bool(self.current_message)
-
-    def message_peek(self):
-        return self.current_message
-
-    def message_get(self):
-        self.any()
-        message = self.current_message
-        self.current_message = None
-        return message
 radio_latest = RadioLatest()
 
 # START

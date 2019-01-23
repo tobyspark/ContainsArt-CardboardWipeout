@@ -1,6 +1,6 @@
 from microbit import *
 import neopixel
-import radio
+from radiolatest import RadioLatest
 
 # SETTINGS
 strip_length = 150
@@ -9,7 +9,7 @@ forwards = True
 
 # SETUP
 strip = neopixel.NeoPixel(pin0, strip_length)
-radio.on()
+radio_latest = RadioLatest()
 
 def strip_colour(colour):
     for position in range(0, strip_length):
